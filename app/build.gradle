@@ -58,4 +58,6 @@ dependencies {
     annotationProcessor 'tech.schoolhelper:moxy-x-compiler:1.7.0'
 
     implementation 'com.google.android.material:material:1.0.0'
+    implementation 'org.jetbrains:annotations:15.0'
+
 }

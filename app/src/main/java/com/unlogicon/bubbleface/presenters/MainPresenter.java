@@ -1,9 +1,12 @@
 package com.unlogicon.bubbleface.presenters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
 import android.net.Uri;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 
@@ -14,7 +17,7 @@ import com.unlogicon.bubbleface.BubbleFaceApp;
 import com.unlogicon.bubbleface.R;
 import com.unlogicon.bubbleface.interfaces.api.RestApi;
 import com.unlogicon.bubbleface.interfaces.views.MainView;
-import com.unlogicon.bubbleface.utils.FileUtils;
+import com.unlogicon.bubbleface.utils.SaveToExternalStorage;
 
 import java.io.File;
 
@@ -36,6 +39,8 @@ public class MainPresenter extends MvpPresenter<MainView> {
     @Inject
     RestApi restApi;
 
+    private Bitmap bmp;
+
     public MainPresenter() {
         BubbleFaceApp.getInstance().getComponents().getAppComponent().inject(this);
     }
@@ -48,30 +53,47 @@ public class MainPresenter extends MvpPresenter<MainView> {
     public void onClick(View view) {
         switch (view.getId()){
             case R.id.add:
+            case R.id.photo:
                 getViewState().openSelect();
+                break;
+            case R.id.share:
+                File file = SaveToExternalStorage.saveTempBitmap(bmp);
+                getViewState().shareImage(file);
                 break;
         }
     }
 
     public void onChoose(String photo) {
 
-        File file = new File(photo);
+        if (photo != null) {
 
-        RequestBody requestFile =
-                RequestBody.create(MediaType.parse("multipart/form-data"), file);
+            File file = new File(photo);
 
-        MultipartBody.Part body =
-                MultipartBody.Part.createFormData("image", file.getName(), requestFile);
+            getViewState().setAddButtonVisibility(View.GONE);
+            getViewState().setProgressBarVisibility(View.VISIBLE);
+            getViewState().setShareVisibility(View.GONE);
 
-        String descriptionString = "magic";
-        RequestBody description =
-                RequestBody.create(
-                        MediaType.parse("multipart/form-data"), descriptionString);
+            RequestBody requestFile =
+                    RequestBody.create(MediaType.parse("multipart/form-data"), file);
 
-        restApi.magic(description, body)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeOn(Schedulers.io())
-                .subscribe(this::onSuccess, this::onError);
+            MultipartBody.Part body =
+                    MultipartBody.Part.createFormData("image", file.getName(), requestFile);
+
+            String descriptionString = "magic";
+            RequestBody description =
+                    RequestBody.create(
+                            MediaType.parse("multipart/form-data"), descriptionString);
+
+            restApi.magic(description, body)
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribeOn(Schedulers.io())
+                    .subscribe(this::onSuccess, this::onError);
+        } else {
+            getViewState().clearPhoto();
+            getViewState().setAddButtonVisibility(View.VISIBLE);
+            getViewState().setProgressBarVisibility(View.GONE);
+            getViewState().setShareVisibility(View.GONE);
+        }
 
     }
 
@@ -79,12 +101,16 @@ public class MainPresenter extends MvpPresenter<MainView> {
         Log.d("", "");
             if (responseBody != null) {
                 // display the image data in a ImageView or save it
-                Bitmap bmp = BitmapFactory.decodeStream(responseBody.byteStream());
-                getViewState().setIamge(bmp);
+                bmp =  BitmapFactory.decodeStream(responseBody.byteStream());
+                getViewState().setAddButtonVisibility(View.GONE);
+                getViewState().setProgressBarVisibility(View.GONE);
+                getViewState().setShareVisibility(View.VISIBLE);
+                getViewState().setImage(bmp);
             }
     }
 
     private void onError(Throwable throwable) {
-
+        getViewState().setAddButtonVisibility(View.VISIBLE);
+        getViewState().setProgressBarVisibility(View.GONE);
     }
 }

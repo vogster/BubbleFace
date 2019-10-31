@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">BubbleFace</string>
+    <string name="camera">Камера</string>
+    <string name="gallery">Выбрать из галереи</string>
+    <string name="choose_photo_using">Выбрать фото используя …</string>
+    <string name="remove_photo">Удалить выбранное фото</string>
+    <string name="select_photo">Выбрать фото</string>
+    <string name="share">Поделиться</string>
 </resources>
