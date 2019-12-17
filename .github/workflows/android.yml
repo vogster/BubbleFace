@@ -1,11 +1,5 @@
 name: Android CI
 
-Posts: 1642
-Joined: 25. May 2010, 23:48
-Primary OS: Mac OS X other
-VBox Version: PUEL
-Guest OSses: Assorted Linux, Windows Server 2012, DOS, Windows 10, BIOS/UEFI emulation
-
 on: [push]
 
 jobs:
