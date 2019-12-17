@@ -1,17 +1,5 @@
 name: Android CI
 
-  VirtualBox 6.0.x can use Hyper-V. You can tell if it is doing so by the green turtle icon at the bottom right corner of the guest window.
-
-  The icon gives you a clue as to the level of performance you can expect. The advice remains the same... ensure virtualisation is enabled in the host's BIOS and disable Hyper-V and all the things that use it.
-
-  Once you have it right you will have the blue 'V' icon back.
-
-  -Andy.
-  My crystal ball is currently broken. If you want assistance you are going to have to give me all of the necessary information.
-  Please don't ask me to do your homework for you, I have more than enough of my own things to do.
-  andyp73
-  Volunteer
-
 Posts: 1642
 Joined: 25. May 2010, 23:48
 Primary OS: Mac OS X other
